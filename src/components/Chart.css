@@ -1,0 +1,20 @@
+.chart {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    height: 50vh;
+    background-color: aqua;
+    align-items: flex-start;
+}
+
+.chart-elem {
+    /* width: ; */
+    align-items: initial;
+    position: relative;
+}
+
+.chart-elem span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
