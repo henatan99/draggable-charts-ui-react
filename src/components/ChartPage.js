@@ -18,12 +18,27 @@ const ChartPage = () => {
     },
     zoomChart: {
       name: null
+    },
+    offset: {
+      left: [],
+      right: []
     }
   })
 
   const chartArea1 = useRef();
   const chartArea2 = useRef();
-  
+
+  const chartArea = {
+    left: chartArea1 && chartArea1.current && {
+      x: chartArea1.current.offsetLeft, y: chartArea1.current.offsetTop,
+      w: chartArea1.current.clientWidth, h: chartArea1.current.clientHeight
+    },
+    right: chartArea2 && chartArea2.current && {
+      x: chartArea2.current.offsetLeft, y: chartArea2.current.offsetTop,
+      w: chartArea2.current.clientWidth, h: chartArea2.current.clientHeight
+    }
+  }
+
   useEffect(() => {
     const chartArea = {
       left: chartArea1 && chartArea1.current && {
@@ -35,6 +50,7 @@ const ChartPage = () => {
         w: chartArea2.current.clientWidth, h: chartArea2.current.clientHeight
       }
     }
+    console.log('offsets', state.offset)
   }, [])
   
 
@@ -43,9 +59,9 @@ const ChartPage = () => {
   const defaultData = ['20', '30', '40', '50'];
 
   const gadgets = [
-    <Gadget title={'Pie Chart'} chart={<LineChart data={defaultData} myName='pie' draggable={true} propState={state} setPropState={setState}/>} /> ,
-    <Gadget title={'Line Chart'} chart={<LineChart data={defaultData} myName='line' draggable={true} propState={state} setPropState={setState}/>} /> ,
-    <Gadget title={'Funnel Chart'} chart={<LineChart data={defaultData} myName='funnel' draggable={true} propState={state} setPropState={setState}/>} /> ,
+    <Gadget title={'Pie Chart'} chart={<LineChart data={defaultData} myName='pie' draggable={true} propState={state} setPropState={setState} chartArea={chartArea}/>} /> ,
+    <Gadget title={'Line Chart'} chart={<LineChart data={defaultData} myName='line' draggable={true} propState={state} setPropState={setState} chartArea={chartArea}/>} /> ,
+    <Gadget title={'Funnel Chart'} chart={<LineChart data={defaultData} myName='funnel' draggable={true} propState={state} setPropState={setState} chartArea={chartArea}/>} /> ,
   ]
 
   const handlePlug = (e) => {
@@ -60,7 +76,7 @@ const ChartPage = () => {
     // localStorage.setItem('plug', {...state.plug,  })
     setState({
       ...state,
-      plug: `${e.target.id}`=== 'left ' ? {...state.plug, left: false} : {...state.plug, right: false}
+      plug: `${e.target.id}`=== 'left' ? {...state.plug, left: false} : {...state.plug, right: false}
     })
   }
 
@@ -85,7 +101,7 @@ const ChartPage = () => {
               chart={<LineChart data={state.data}  draggable={false} />} 
               plugged={state.plug.left} 
               myRef={chartArea1}
-              handleUnplug={handleUnPlug}
+              // handleUnplug={handleUnPlug}
               propState={state}
               setPropState={setState}
               myName={'left'}
@@ -96,7 +112,7 @@ const ChartPage = () => {
               chart={<LineChart data={state.data} draggable={false}/>}
               plugged={state.plug.right}  
               myRef={chartArea2} 
-              handleUnplug={handleUnPlug}
+              // handleUnplug={handleUnPlug}
               propState={state}
               setPropState={setState}
               myName={'right'}
@@ -109,6 +125,7 @@ const ChartPage = () => {
         </div>
       </div>
       <div>{`name: ${state.drag.name}`} {`x: ${state.drag.coord.x}`} {`  dragging: ${state.drag.dragging}`}</div>
+      <div>{`plug left: ${state.plug.left}`} {`plug right: ${state.plug.right}`}</div>
     </div>
   );
 };

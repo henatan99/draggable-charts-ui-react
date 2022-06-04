@@ -2,7 +2,7 @@ import './LineChart.css';
 import React, { useState } from 'react';
 
 const Chart = (props) => {
-  const { data, propState, setPropState, myName, draggable } = props;
+  const { data, propState, setPropState, myName, draggable, chartArea } = props;
   const dataLength = data.length;
   const numericData = data.map((val) => parseFloat(val));
   const maxHeight = Math.max(...numericData);
@@ -10,7 +10,10 @@ const Chart = (props) => {
   const dividers = Math.ceil(maxHeight / dividerGap);
   const chartHeight = dividers * dividerGap;
 
+  // console.log('chartAreafrom chart', chartArea)
+
   const handleDragStart = (e) => {
+    e.stopPropagation()
     setPropState({ ...propState, drag: {name: e.target.id, dragging: true, coord: {x: 0, y: 0}}});
   };
 
@@ -19,9 +22,29 @@ const Chart = (props) => {
     setPropState({ ...propState, drag: {name: e.target.id, dragging: true, coord: {x: e.clientX, y: e.clientY}}});
   };
 
+  const calcOffset = (area, mouse) => {
+    const centerX = area.x + area.w/2;
+    const centerY = area.y + area.h/2;
+    const xOff = Math.abs(centerX - mouse.x)/area.w;
+    const yOff = Math.abs(centerY - mouse.y)/area.h;
+    return [xOff, yOff]
+  }
+
   const handleDragEnd = (e) => {
     e.stopPropagation()
-    setPropState({ ...propState, drag: {name: e.target.id, dragging: false, coord: {x: 0, y: 0}}});
+    setPropState({ ...propState, drag: {name: e.target.id, dragging: false, coord: {x: e.clientX, y: e.clientY}}});
+    const leftOffset = calcOffset(chartArea.left, {x: e.clientX, y: e.clientY});
+    const rightOffset = calcOffset(chartArea.right, {x: e.clientX, y: e.clientY});
+    setPropState({...propState, offset: {left: leftOffset, right: rightOffset}})
+    setPropState({
+      ...propState,
+      plug: {
+        left: propState.plug.left === false ? (leftOffset[0] < 0.25 &&  leftOffset[1] < 0.25) : true,
+        right: propState.plug.right === false ? (rightOffset[0] < 0.25 &&  rightOffset[1] < 0.25) : true
+      }
+    })
+    console.log(chartArea)
+    console.log('offsets', {left: leftOffset, right: rightOffset})
   };
 
   return (

@@ -4,7 +4,7 @@ import deleteIcon from '../../assets/delete-icon.png';
 import expandIcon from '../../assets/expand-icon.jpg';
 
 const ChartArea = (props) => {
-    const { chart, plugged, myRef, handleUnplug, propState, setPropState, myName } = props;
+    const { chart, plugged, myRef, propState, setPropState, myName } = props;
 
     const handleZoom = (e) => setPropState({
         ...propState,
@@ -37,8 +37,24 @@ const ChartArea = (props) => {
         })
     }
 
+    const handleUnplug = () => {
+        myName === 'left' ? 
+        setPropState({
+            ...propState, plug: {
+                ...propState.plug,
+                left: false
+            }
+        }) :
+        setPropState({
+            ...propState, plug: {
+                ...propState.plug,
+                right: false
+            }
+        })
+    }
+
     return (
-        <div id={myName} className="chart-area" style={myStyle} ref={myRef} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
+        <div id={myName} className="chart-area" onMo style={myStyle} ref={myRef} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
             <span className="chart-area-top">
                 <button onClick={handleZoom}><img src={expandIcon}></img></button>
                 <button onClick={handleUnplug}><img src={deleteIcon}></img></button>
