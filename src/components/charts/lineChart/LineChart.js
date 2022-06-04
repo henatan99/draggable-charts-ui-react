@@ -2,7 +2,7 @@ import './LineChart.css';
 import React, { useState } from 'react';
 
 const Chart = (props) => {
-  const { data } = props;
+  const { data, propDragState, setPropDragState, myName, draggable } = props;
   const dataLength = data.length;
   const numericData = data.map((val) => parseFloat(val));
   const maxHeight = Math.max(...numericData);
@@ -12,21 +12,33 @@ const Chart = (props) => {
 
   const [state, setState] = useState({ coord: { x: 0, y: 0 }, myMouseDown: false, dragging: false });
 
+  const handleDragStart = (e) => {
+    setState({ ...state, dragging: true, coord: { } });
+    setPropDragState({...propDragState, name: e.target.id, dragging: true, coord: { } });
+    console.log('propDragSTateOnStartFromChart', propDragState);
+  };
+
   const handleDrag = (e) => {
     setState({ ...state, dragging: true, coord: { ...state.coord, x: e.clientX } });
+    setPropDragState({...propDragState, name: e.target.id, dragging: true, coord: { ...state.coord, x: e.clientX } });
+    console.log('propDragSTateFromChart', propDragState);
   };
 
   const handleDragEnd = (e) => {
     setState({ ...state, dragging: false });
+    setPropDragState({...propDragState, name: e.target.id, dragging: null, coord: { } });
+    console.log('propDragSTateOnEndFromChart', propDragState);
   };
 
   return (
     <>
       <div
         className="chart"
-        draggable
+        id={myName}
+        draggable={draggable}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
       >
         {
                 dataLength > 0 && numericData.map((val, ind) => (
