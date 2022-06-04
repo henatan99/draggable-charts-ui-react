@@ -7,6 +7,8 @@ import ChartArea from './chartArea/chartArea';
 
 const ChartPage = () => {
   const [data, setData] = useState(['20', '30', '40', '50']);
+  const [plugged, setPlugged] = useState(true);
+
   const [inputData, setInputData] = useState('');
 
   const defaultData = ['20', '30', '40', '50'];
@@ -29,8 +31,8 @@ const ChartPage = () => {
       <button onClick={handleClick}>Add Chart Data</button>
       <div className="chart-screen">
         <div className="left">
-          <ChartArea chart={<LineChart data={defaultData}/>} />
-          <ChartArea chart={<Gadget title={'Pie Chart'} chart={<LineChart data={defaultData}/>} /> }/>
+          <ChartArea chart={<LineChart data={data}  />} plugged={plugged} />
+          <ChartArea chart={<LineChart data={data}/>} />
         </div>
         <div className="right">
             <GadgetsWrapper gadgets={gadgets} />
