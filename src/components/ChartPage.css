@@ -1,0 +1,26 @@
+.chart-page {
+    width: 100%;
+}
+
+.chart-screen {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    width: 75%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-right: 10%;
+}
+
+.right {
+    width: 25%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-left: 1px solid;
+}
