@@ -13,7 +13,7 @@ const ChartArea = (props) => {
 
     const myStyle = {
         backgroundImage: plugged && 'none',
-        width: propState.zoomChart.name === myName && '100%',
+        width: propState.zoomChart.name === myName && '80%',
         zIndex: propState.zoomChart.name === myName && 50
     } 
 
