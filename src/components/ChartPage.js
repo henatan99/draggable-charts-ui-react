@@ -6,85 +6,109 @@ import GadgetsWrapper from './gadgetsWrapper/GadgetsWrapper';
 import ChartArea from './chartArea/chartArea';
 
 const ChartPage = () => {
-  const [data, setData] = useState(['20', '30', '40', '50']);
-  const [plugged1, setPlugged1] = useState(localStorage.getItem('plgu1'));
-  const [plugged2, setPlugged2] = useState(localStorage.getItem('plug2'));
+  const [state, setState] = useState({
+    inputData: '',
+    data: ['20', '30', '40', '50'],
+    plug: {left: false, right: false},
+    mouse: {
+      over: {left: null, right: null},
+    },
+    drag: {
+      name: '', dragging: false, coord: {x: 0, y: 0}
+    },
+    zoomChart: {
+      name: null
+    }
+  })
 
   const chartArea1 = useRef();
   const chartArea2 = useRef();
-
-  const [dragState, setDragState] = useState({name: '', dragging: {}, coord: {x: 0,  y: 0}});
   
   useEffect(() => {
-    const chartArea1Dim = {x: chartArea1.current.offsetLeft, y: chartArea1.current.offsetTop }
-    const chartArea2Dim = {x: chartArea2.current.offsetLeft, y: chartArea2.current.offsetTop }
-    const chartArea1Size = {w: chartArea1.current.clientWidth, h: chartArea1.current.clientHeight }
-    const chartArea2Size = {x: chartArea2.current.clientWidth, y: chartArea2.current.clientHeight }
-    console.log('chartArea1Size1', chartArea1Size);
-    console.log('dragState',dragState );
+    const chartArea = {
+      left: chartArea1 && chartArea1.current && {
+        x: chartArea1.current.offsetLeft, y: chartArea1.current.offsetTop,
+        w: chartArea1.current.clientWidth, h: chartArea1.current.clientHeight
+      },
+      right: chartArea2 && chartArea2.current && {
+        x: chartArea2.current.offsetLeft, y: chartArea2.current.offsetTop,
+        w: chartArea2.current.clientWidth, h: chartArea2.current.clientHeight
+      }
+    }
   }, [])
   
 
-  const [inputData, setInputData] = useState('');
+  // const [inputData, setInputData] = useState('');
 
   const defaultData = ['20', '30', '40', '50'];
 
   const gadgets = [
-    <Gadget title={'Pie Chart'} chart={<LineChart data={defaultData} myName='pie' draggable={true} propDragState={dragState} setPropDragState={setDragState}/>} /> ,
-    <Gadget title={'Line Chart'} chart={<LineChart data={defaultData} myName='line' draggable={true} propDragState={dragState} setPropDragState={setDragState}/>} /> ,
-    <Gadget title={'Funnel Chart'} chart={<LineChart data={defaultData} myName='funnel' draggable={true} propDragState={dragState} setPropDragState={setDragState}/>} /> ,
+    <Gadget title={'Pie Chart'} chart={<LineChart data={defaultData} myName='pie' draggable={true} propState={state} setPropState={setState}/>} /> ,
+    <Gadget title={'Line Chart'} chart={<LineChart data={defaultData} myName='line' draggable={true} propState={state} setPropState={setState}/>} /> ,
+    <Gadget title={'Funnel Chart'} chart={<LineChart data={defaultData} myName='funnel' draggable={true} propState={state} setPropState={setState}/>} /> ,
   ]
 
-  const handleUnPlug1 = () => {
-    const plug1 = localStorage.setItem('plug1', null);
-    setPlugged1(plug1);
-  }
-  
-  const handleUnPlug2 = () => {
-    const plug2 = localStorage.setItem('plug2', null);
-    setPlugged2(plug2);
+  const handlePlug = (e) => {
+    // localStorage.setItem('plug', {...state.plug,  })
+    setState({
+      ...state,
+      plug: `${e.target.id}`=== 'left ' ? {...state.plug, left: true} : {...state.plug, right: true}
+    })
   }
 
-  const plug1 = () => {
-    const plug1 = localStorage.setItem('plug1', true);
-    setPlugged1(plug1);
-  }
-
-  const plug2 = () => {
-    const plug2 = localStorage.setItem('plug2', true);
-    setPlugged2(plug2);
+  const handleUnPlug = (e) => {
+    // localStorage.setItem('plug', {...state.plug,  })
+    setState({
+      ...state,
+      plug: `${e.target.id}`=== 'left ' ? {...state.plug, left: false} : {...state.plug, right: false}
+    })
   }
 
   const handleClick = () => {
     console.log('inputData', inputData);
     setData(inputData.split(','));
+    setState({
+      ...state,
+      data: state.inputData
+    })
   };
 
   return (
     <div className='chart-page'>
-      <input value={inputData} onChange={(e) => setInputData(e.target.value)} />
-      <div>{inputData}</div>
+      <input value={state.inputData} onChange={(e) => setState({...state, inputData: e.target.value})} />
+      <div>{state.inputData}</div>
       <button onClick={handleClick}>Add Chart Data</button>
       <div className="chart-screen">
         <div className="left">
-          <ChartArea 
-            chart={<LineChart data={data}  draggable={false} />} 
-            plugged={plugged1} 
-            myRef={chartArea1}
-            handleUnplug={handleUnPlug1}
-          />
-          <ChartArea 
-            chart={<LineChart data={data} draggable={false}/>}
-            plugged={plugged2}  
-            myRef={chartArea2} 
-            handleUnplug={handleUnPlug2}
-          />
+          {state.zoomChart.name !== 'right' &&
+            <ChartArea 
+              chart={<LineChart data={state.data}  draggable={false} />} 
+              plugged={state.plug.left} 
+              myRef={chartArea1}
+              handleUnplug={handleUnPlug}
+              propState={state}
+              setPropState={setState}
+              myName={'left'}
+            />
+          }
+          {state.zoomChart.name !== 'left' && 
+            <ChartArea 
+              chart={<LineChart data={state.data} draggable={false}/>}
+              plugged={state.plug.right}  
+              myRef={chartArea2} 
+              handleUnplug={handleUnPlug}
+              propState={state}
+              setPropState={setState}
+              myName={'right'}
+            />
+          }
+     
         </div>
         <div className="right">
             <GadgetsWrapper gadgets={gadgets} />
         </div>
       </div>
-      <div>{`name: ${dragState.name}`} {`x: ${dragState.coord.x}`} {`   dragging: ${dragState.dragging}`}</div>
+      <div>{`name: ${state.drag.name}`} {`x: ${state.drag.coord.x}`} {`  dragging: ${state.drag.dragging}`}</div>
     </div>
   );
 };

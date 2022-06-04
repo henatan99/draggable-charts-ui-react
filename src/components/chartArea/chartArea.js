@@ -1,24 +1,55 @@
 import './ChartArea.css'
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import deleteIcon from '../../assets/delete-icon.png';
 import expandIcon from '../../assets/expand-icon.jpg';
 
 const ChartArea = (props) => {
-    const { chart, plugged, myRef, handleUnplug } = props;
+    const { chart, plugged, myRef, handleUnplug, propState, setPropState, myName } = props;
+
+    const handleZoom = (e) => setPropState({
+        ...propState,
+        zoomChart: propState.zoomChart.name === myName ? {name: null} : {name: myName}
+    })
+
+    const myStyle = {
+        backgroundImage: plugged && 'none',
+        width: propState.zoomChart.name === myName && '100%',
+        zIndex: propState.zoomChart.name === myName && 50
+    } 
+
+    const handleMouseOver = (e) => {
+        setPropState({
+            ...propState,
+            mouse: {
+                ...propState.mouse,
+                over: e.target.id === 'left' ? {...propState.mouse.over, left: true} : {...propState.mouse.over, right: true}
+            } 
+        })
+    }
+
+    const handleMouseOut = (e) => {
+        setPropState({
+            ...propState,
+            mouse: {
+                ...propState.mouse,
+                over: {left: false, right: false}
+            } 
+        })
+    }
 
     return (
-        <div className="chart-area" style={plugged && {backgroundImage: 'none'}} ref={myRef}>
+        <div id={myName} className="chart-area" style={myStyle} ref={myRef} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
             <span className="chart-area-top">
-                <button><img src={expandIcon}></img></button>
+                <button onClick={handleZoom}><img src={expandIcon}></img></button>
                 <button onClick={handleUnplug}><img src={deleteIcon}></img></button>
-                {/* <button>E</button>
-                <button>X</button> */}
             </span>
             <div className="chart-space">
                 {
                     plugged && chart && chart
                 }
             </div>
+            <div>{`zoom ${propState.zoomChart.name}`}</div>
+            <div>{`over: ${propState.mouse.over[`${myName}`]}`}</div>
         </div>
     )
 }

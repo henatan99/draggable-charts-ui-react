@@ -2,7 +2,7 @@ import './LineChart.css';
 import React, { useState } from 'react';
 
 const Chart = (props) => {
-  const { data, propDragState, setPropDragState, myName, draggable } = props;
+  const { data, propState, setPropState, myName, draggable } = props;
   const dataLength = data.length;
   const numericData = data.map((val) => parseFloat(val));
   const maxHeight = Math.max(...numericData);
@@ -10,24 +10,18 @@ const Chart = (props) => {
   const dividers = Math.ceil(maxHeight / dividerGap);
   const chartHeight = dividers * dividerGap;
 
-  const [state, setState] = useState({ coord: { x: 0, y: 0 }, myMouseDown: false, dragging: false });
-
   const handleDragStart = (e) => {
-    setState({ ...state, dragging: true, coord: { } });
-    setPropDragState({...propDragState, name: e.target.id, dragging: true, coord: { } });
-    console.log('propDragSTateOnStartFromChart', propDragState);
+    setPropState({ ...propState, drag: {name: e.target.id, dragging: true, coord: {x: 0, y: 0}}});
   };
 
   const handleDrag = (e) => {
-    setState({ ...state, dragging: true, coord: { ...state.coord, x: e.clientX } });
-    setPropDragState({...propDragState, name: e.target.id, dragging: true, coord: { ...state.coord, x: e.clientX } });
-    console.log('propDragSTateFromChart', propDragState);
+    e.stopPropagation()
+    setPropState({ ...propState, drag: {name: e.target.id, dragging: true, coord: {x: e.clientX, y: e.clientY}}});
   };
 
   const handleDragEnd = (e) => {
-    setState({ ...state, dragging: false });
-    setPropDragState({...propDragState, name: e.target.id, dragging: null, coord: { } });
-    console.log('propDragSTateOnEndFromChart', propDragState);
+    e.stopPropagation()
+    setPropState({ ...propState, drag: {name: e.target.id, dragging: false, coord: {x: 0, y: 0}}});
   };
 
   return (
@@ -76,10 +70,6 @@ const Chart = (props) => {
                 ))
             }
       </div>
-      {/* <p>{`On Mouse Move clientX: ${state.coord.x}`}</p>
-      <p>{`On Mouse Move clientY: ${state.coord.y}`}</p>
-      <p>{`Mouse is: ${state.myMouseDown === false ? 'Up' : 'Down'}`}</p>
-      <p>{`Dragging: ${state.dragging}`}</p> */}
     </>
 
   );
