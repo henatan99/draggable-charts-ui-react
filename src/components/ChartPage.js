@@ -4,6 +4,7 @@ import LineChart from './charts/lineChart/LineChart';
 import Gadget from './gadget/Gadget';
 import GadgetsWrapper from './gadgetsWrapper/GadgetsWrapper';
 import ChartArea from './chartArea/chartArea';
+import Draggable from './charts/draggable/draggable';
 
 const ChartPage = () => {
   const [state, setState] = useState({
@@ -51,10 +52,14 @@ const ChartPage = () => {
 
   const defaultData = ['20', '30', '40', '50'];
 
+  const chart = (name, draggable) => ( <Draggable propState={state} setPropState={setState} chartArea={chartArea}  myName={name} draggable={draggable} >
+      <LineChart data={defaultData} />
+    </Draggable> )
+      
   const gadgets = [
-    <Gadget title="Pie Chart" chart={<LineChart data={defaultData} myName="pie" draggable propState={state} setPropState={setState} chartArea={chartArea} />} key="pie" />,
-    <Gadget title="Line Chart" chart={<LineChart data={defaultData} myName="line" draggable propState={state} setPropState={setState} chartArea={chartArea} />} key="line" />,
-    <Gadget title="Funnel Chart" chart={<LineChart data={defaultData} myName="funnel" draggable propState={state} setPropState={setState} chartArea={chartArea} />} key="funnel" />,
+    <Gadget title="Pie Chart" chart={chart('pie',  true)} key="pie" />,
+    <Gadget title="Line Chart" chart={chart('line', true)} key="line" />,
+    <Gadget title="Funnel Chart" chart={chart('funnel', true)} key="funnel" />,
   ];
 
   const handleClick = () => {
@@ -81,7 +86,7 @@ const ChartPage = () => {
           {state.zoomChart.name !== 'right'
             && (
             <ChartArea
-              chart={<LineChart data={state.data} draggable={false} />}
+              chart={chart('line', false)}
               plugged={state.plug.left}
               myRef={chartArea1}
               // handleUnplug={handleUnPlug}
@@ -93,7 +98,7 @@ const ChartPage = () => {
           {state.zoomChart.name !== 'left'
             && (
             <ChartArea
-              chart={<LineChart data={state.data} draggable={false} />}
+              chart={chart('line', false)}
               plugged={state.plug.right}
               myRef={chartArea2}
               // handleUnplug={handleUnPlug}

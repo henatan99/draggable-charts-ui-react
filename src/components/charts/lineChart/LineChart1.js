@@ -1,10 +1,17 @@
+import './LineChart.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Draggable = (props) => {
+const Chart = (props) => {
   const {
-    propState, setPropState, myName, draggable, chartArea, children
+    data, propState, setPropState, myName, draggable, chartArea,
   } = props;
+  const dataLength = data.length;
+  const numericData = data.map((val) => parseFloat(val));
+  const maxHeight = Math.max(...numericData);
+  const dividerGap = 20;
+  const dividers = Math.ceil(maxHeight / dividerGap);
+  const chartHeight = dividers * dividerGap;
 
   // console.log('chartAreafrom chart', chartArea)
 
@@ -59,20 +66,64 @@ const Draggable = (props) => {
   };
 
   return (
-    <div
-      className="chart"
-      id={myName}
-      draggable={draggable}
-      onDrag={handleDrag}
-      onDragEnd={handleDragEnd}
-      onDragStart={handleDragStart}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        className="chart"
+        id={myName}
+        draggable={draggable}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
+      >
+        {
+                dataLength > 0 && numericData.map((val, ind) => (
+                  <div
+                    className="chart-elem"
+                    style={{
+                      width: `${(100 / 2) / dataLength}%`,
+                      height: '100%',
+                      marginLeft: `${(100 / 4) / dataLength}%`,
+                      marginRight: `${(100 / 4) / dataLength}%`,
+                    }}
+                    key={ind}
+                  >
+                    <span
+                      style={{
+                        width: '100%',
+                        height: `${(val / chartHeight) * 100}%`,
+                        backgroundColor: 'blue',
+                      }}
+                    >
+                      <span>{val}</span>
+                    </span>
+                  </div>
+                ))
+            }
+        {
+                [...Array(dividers + 1).keys()].map((divider, ind) => (
+                  <span
+                    style={{
+                      width: '100%',
+                      height: 5,
+                      position: 'absolute',
+                      left: 0,
+                      bottom: `${divider * (dividerGap / chartHeight) * 100}%`,
+                    }}
+                    key={ind}
+                  >
+                    <p>{divider * dividerGap}</p>
+                    <hr />
+                  </span>
+                ))
+            }
+      </div>
+    </>
+
   );
 };
 
-Draggable.defaultProps = {
+Chart.defaultProps = {
+  data: [],
   propState: null,
   setPropState: null,
   myName: null,
@@ -80,7 +131,8 @@ Draggable.defaultProps = {
   chartArea: null,
 };
 
-Draggable.propTypes = {
+Chart.propTypes = {
+  data: PropTypes.instanceOf(Array),
   propState: PropTypes.shape({
     inputData: PropTypes.string,
     data: PropTypes.instanceOf(Array),
@@ -114,7 +166,6 @@ Draggable.propTypes = {
   myName: PropTypes.string,
   draggable: PropTypes.bool,
   chartArea: PropTypes.instanceOf(Element),
-  children: PropTypes.instanceOf(Element)
 };
 
-export default Draggable;
+export default Chart;
