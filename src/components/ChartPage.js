@@ -1,6 +1,7 @@
 import './ChartPage.css';
 import React, { useEffect, useRef, useState } from 'react';
 import LineChart from './charts/lineChart/LineChart';
+import FunnelChart from './charts/funnelChart/funnelChart';
 import Gadget from './gadget/Gadget';
 import GadgetsWrapper from './gadgetsWrapper/GadgetsWrapper';
 import ChartArea from './chartArea/chartArea';
@@ -52,14 +53,25 @@ const ChartPage = () => {
 
   const defaultData = ['20', '30', '40', '50'];
 
-  const chart = (name, draggable) => ( <Draggable propState={state} setPropState={setState} chartArea={chartArea}  myName={name} draggable={draggable} >
-      <LineChart data={defaultData} />
-    </Draggable> )
-      
+  const lineChart = <LineChart data={defaultData} />;
+  const funnelChart = <FunnelChart data={defaultData} tipRatio={0.5} angle={30} />;
+
+  const chart = (name, chart, draggable) => (
+    <Draggable 
+      propState={state}
+      setPropState={setState}
+      chartArea={chartArea}
+      myName={name}
+      draggable={draggable}
+    >
+      {chart}
+    </Draggable>
+  );
+
   const gadgets = [
-    <Gadget title="Pie Chart" chart={chart('pie',  true)} key="pie" />,
-    <Gadget title="Line Chart" chart={chart('line', true)} key="line" />,
-    <Gadget title="Funnel Chart" chart={chart('funnel', true)} key="funnel" />,
+    <Gadget title="Pie Chart" chart={chart('pie', lineChart, true)} key="pie" />,
+    <Gadget title="Line Chart" chart={chart('line', lineChart, true)} key="line" />,
+    <Gadget title="Funnel Chart" chart={chart('funnel', funnelChart, true)} key="funnel" />,
   ];
 
   const handleClick = () => {
@@ -86,7 +98,7 @@ const ChartPage = () => {
           {state.zoomChart.name !== 'right'
             && (
             <ChartArea
-              chart={chart('line', false)}
+              chart={chart('line', lineChart, false)}
               plugged={state.plug.left}
               myRef={chartArea1}
               // handleUnplug={handleUnPlug}
@@ -98,7 +110,7 @@ const ChartPage = () => {
           {state.zoomChart.name !== 'left'
             && (
             <ChartArea
-              chart={chart('line', false)}
+              chart={chart('funnel', funnelChart, false)}
               plugged={state.plug.right}
               myRef={chartArea2}
               // handleUnplug={handleUnPlug}

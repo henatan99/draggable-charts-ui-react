@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const Draggable = (props) => {
   const {
-    propState, setPropState, myName, draggable, chartArea, children
+    propState, setPropState, myName, draggable, chartArea, children,
   } = props;
 
   // console.log('chartAreafrom chart', chartArea)
@@ -78,6 +78,7 @@ Draggable.defaultProps = {
   myName: null,
   draggable: null,
   chartArea: null,
+  children: null
 };
 
 Draggable.propTypes = {
@@ -114,7 +115,7 @@ Draggable.propTypes = {
   myName: PropTypes.string,
   draggable: PropTypes.bool,
   chartArea: PropTypes.instanceOf(Element),
-  children: PropTypes.instanceOf(Element)
+  children: PropTypes.instanceOf(Element),
 };
 
 export default Draggable;

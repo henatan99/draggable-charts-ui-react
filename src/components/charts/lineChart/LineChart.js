@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Chart = (props) => {
   const {
-    data
+    data,
   } = props;
   const dataLength = data.length;
   const numericData = data.map((val) => parseFloat(val));
@@ -15,7 +15,7 @@ const Chart = (props) => {
 
   return (
     <>
-        {
+      {
                 dataLength > 0 && numericData.map((val, ind) => (
                   <div
                     className="chart-elem"
@@ -39,7 +39,7 @@ const Chart = (props) => {
                   </div>
                 ))
             }
-        {
+      {
                 [...Array(dividers + 1).keys()].map((divider, ind) => (
                   <span
                     style={{
