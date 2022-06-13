@@ -78,7 +78,7 @@ Draggable.defaultProps = {
   myName: null,
   draggable: null,
   chartArea: null,
-  children: null
+  children: null,
 };
 
 Draggable.propTypes = {

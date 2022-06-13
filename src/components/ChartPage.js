@@ -1,5 +1,5 @@
 import './ChartPage.css';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import LineChart from './charts/lineChart/LineChart';
 import FunnelChart from './charts/funnelChart/funnelChart';
 import Gadget from './gadget/Gadget';
@@ -45,9 +45,9 @@ const ChartPage = () => {
     },
   };
 
-  useEffect(() => {
-    console.log('offsets', state.offset);
-  }, []);
+  // useEffect(() => {
+  //   console.log('offsets', state.offset);
+  // }, []);
 
   // const [inputData, setInputData] = useState('');
 
@@ -57,7 +57,7 @@ const ChartPage = () => {
   const funnelChart = <FunnelChart data={defaultData} tipRatio={0.5} angle={30} />;
 
   const chart = (name, chart, draggable) => (
-    <Draggable 
+    <Draggable
       propState={state}
       setPropState={setState}
       chartArea={chartArea}
